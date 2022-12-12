@@ -1,14 +1,12 @@
 <?php
 
-$MODS=[];
+session_id('IoT-Gateway');
+session_start();	// must be executed after all classes declared or autoloader activated
 
-if (is_file('config-default.php')) require_once 'config-default.php';
-if (is_file('config.php')) require_once 'config.php';
+include_once 'config.php';
 
 spl_autoload_register(function ($class_name) {
-    foreach($MODS as $M) if (is_file($M.'/'.$class_name) 
-      return require_once $M.'/'.$class_name;
-    require_once $class_name . '.php';
+    require_once $class_name.'.php';
 });
 
 
@@ -16,6 +14,11 @@ function mTS() {	// milli time-stamp
   // "0.53042800 1647443466"
   return preg_replace('/^0[.]([0-9]{3})[0-9]{5} ([0-9]*)$/', '\2\1', microtime(FALSE));
 }
+
+function sec2ts($s) {   // converts remaining seconds to timestamp, or 0 if not set
+  return $s ? $s + time() : 0;
+}
+
 
 function loadPersistentObject($name, $class) {
   $GLOBALS[$name]=null;
@@ -27,19 +30,12 @@ function loadPersistentObject($name, $class) {
   }
 }
 
-function addModule($subdir,	// a directory (relative) where module files are located
-                   $modfile,	// module definition file (just filename) located in $subdir
-                   $path='') {	// full path to the module directory (hope it could be removed)
-  // $moddef=$path.'/'.$modfile;
-  if ($subdir===NULL) {
-    $moddef=$modfile;
-  } else {
-    $moddef=$subdir.'/'.$modfile;
-    if (!is_dir($subdir)) return FALSE;
-    $MODS[]=$subdir;
-  }
-  if (!is_file($moddef)) return FALSE;
-  require_once $moddef;
+function addModule($modfile,		// module definition file (just filename) located in $subdir
+                   $path='',		// full path to the module directory
+                   $isnew=FALSE) {	// should this new path be regiestered
+  if (!is_file($path.'/'.$modfile)) return FALSE;
+  if ($isnew) set_include_path(get_include_path().":".$path);
+  require_once $modfile;
   return TRUE;
 }
 
@@ -49,21 +45,18 @@ foreach(explode(':', get_include_path()) as $dir) {
   if (!$dh) continue;
   while (($entry = readdir($dh)) !== FALSE) {
     if (preg_match('/^iotmod-[^.]*$/', $entry)) {
-       if (addModule($entry, $entry.'.php', $dir.'/'.$entry)) continue;
-       if (addModule($entry, 'iotmod.php', $dir.'/'.$entry)) continue;
+       if (addModule($entry.'.php', $dir.'/'.$entry, TRUE)) continue;
+       if (addModule('iotmod.php', $dir.'/'.$entry, TRUE)) continue;
     }
-    if (preg_match('/^iotmod-[^.]*[.]php$/', $entry)) 
-       addModule(NULL, $entry, $dir.'/'.$entry, )) continue;
-    }  
+    if (preg_match('/^iotmod-[^.]*[.]php$/', $entry)) addModule($entry, $dir.'/'.$entry);
   }
   closedir($dh);
 }
 
-session_id('IoT gateway');
-session_start();	// must be executed after all classes declared or autoloader activated
 
 Msg::handleRest();
 
+OutputMsgPersistent::StoreInstances();
 session_write_close();
 exit(0);
 

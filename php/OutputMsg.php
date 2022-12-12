@@ -1,3 +1,5 @@
+<?php
+
 abstract class OutputMsg extends Msg {
   function getData() { return $this; }
   abstract function Update();

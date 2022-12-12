@@ -1,0 +1,24 @@
+#!/bin/bash
+# $1=iot-gw directory
+# $2=result tar file
+
+T=/tmp/.$$.tmp
+
+trap "rm -rf '$T'" 0
+
+mkdir -p "$T"/{php,html}
+cp "$1"/php/* "$T"/php
+cp "$1"/www/* "$T"/html
+
+for m in "$1"/../iotgw-mods/*
+do
+  [ -d "$m" ] || continue
+  md="$m/iotgw-mod"
+  [ -d "$md" ] || continue
+  mod="${m##*/}"
+  mod="iotmod-${mod#iotmod-}"	# not really needed
+  
+  cp -a "$md" "$T/php/$mod" || exit
+done
+
+tar -zcvf "$2" -C "$T" .
