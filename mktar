@@ -18,7 +18,7 @@ do
   mod="${m##*/}"
   mod="iotmod-${mod#iotmod-}"	# not really needed
   
-  cp -a "$md" "$T/php/$mod" || exit
+  cp -a "$md/" "$T/php/$mod" || exit
 done
 
 tar -zcvf "$2" -C "$T" .
