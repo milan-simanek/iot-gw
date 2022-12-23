@@ -7,7 +7,7 @@ function getMessages() {
 //    error_log("fetch message {".$json."}\n");
     Msg::fromJsonExecute($json);
     if ($msgs++>20) {
-      echo "OK, maximum message number reached.\n";
+      echo "interrupted, maximum message number reached.\n";
       return;
     }
   }
