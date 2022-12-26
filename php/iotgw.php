@@ -48,7 +48,7 @@ foreach(explode(':', get_include_path()) as $dir) {
        if (addModule($entry.'.php', $dir.'/'.$entry, TRUE)) continue;
        if (addModule('iotmod.php', $dir.'/'.$entry, TRUE)) continue;
     }
-    if (preg_match('/^iotmod-[^.]*[.]php$/', $entry)) addModule($entry, $dir.'/'.$entry);
+    if (preg_match('/^iotmod-[^.]*[.]php$/', $entry)) addModule($entry, $dir);
   }
   closedir($dh);
 }
