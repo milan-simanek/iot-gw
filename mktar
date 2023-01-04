@@ -3,6 +3,7 @@
 # $2=result tar file
 
 T=/tmp/.$$.tmp
+MODULES=mods
 
 trap "rm -rf '$T'" 0
 
@@ -10,7 +11,7 @@ mkdir -p "$T"/{php,html}
 cp "$1"/php/* "$T"/php
 cp "$1"/www/* "$T"/html
 
-for m in "$1"/../iotgw-mods/*
+for m in "$1"/../$MODULES/*
 do
   [ -d "$m" ] || continue
   md="$m/iotgw-mod"
