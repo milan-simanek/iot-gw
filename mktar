@@ -11,14 +11,21 @@ mkdir -p "$T"/{php,html}
 cp "$1"/php/* "$T"/php
 cp "$1"/www/* "$T"/html
 
-for m in "$1"/../$MODULES/*
+for md in "$1"/../$MODULES/*/iotgw-*
 do
-  [ -d "$m" ] || continue
-  md="$m/iotgw-mod"
   [ -d "$md" ] || continue
-  mod="${m##*/}"
-  mod="iotmod-${mod#iotmod-}"	# not really needed
+  m="${md%/iotgw-*}"
+  mod="${$md##*/iotgw-}"
+  [ "$mod" = 'mod' ] && mod="${m##*/}"
+
+  if [ -d "$T/php/$mod" ]
+  then
+    n=1
+    while [ -d "$T/php/$mod.$n" ] ; do let n++ ; done
+    mod="$mod.$n"
+  fi
   
+  echo "IOTGW: $mod"
   cp -a "$md/" "$T/php/$mod" || exit
 done
 
