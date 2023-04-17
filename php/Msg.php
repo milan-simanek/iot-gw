@@ -4,6 +4,8 @@ abstract class Msg {
   const GETMAXLEN = 4096;
   const DSTMAXLEN = 30;
   const TYPEMAXLEN = 30;
+  const LOGUPDATE = FALSE;
+  const LOGPARAMS = '';
   private static $allLocal=[];
   private static $allGet=[];
   private static $allPost=[];
@@ -24,7 +26,7 @@ abstract class Msg {
     });
   }
   
-  public static function fromJsonExecute(string $json) {
+  public static function fromJsonExecute(string $json, $origin='-') {
     $obj=json_decode($json, false, 10);
     if ($obj===true || $obj===false || $obj===null||!isset($obj->type)) return;
 //    if ($obj===true || $obj===false || $obj===null||!isset($obj->type)||!isset($obj->dst)) return;
@@ -40,9 +42,14 @@ abstract class Msg {
     foreach(get_object_vars($msg) as $var=>$val) if (isset($obj->data->$var)) {
       $msg->$var=$obj->data->$var;
     }
+    $msg->insertOrigin($origin);
     if ($msg->execute($obj->mts)) {
       $ts=mTS();
       echo '{ "result": "OK", "mts": '.$ts." }\n";
+      if ($msg::LOGUPDATE) {
+        $params='';foreach(explode(',',$msg::LOGPARAMS) as $p) $params.=$p.'='.$msg->$p.',';
+        $msg->writeLog($obj->mts, $msg->origin, '-', $msg::TYPE, $params, 'OK');
+      }
     } else error_log("execute message failed TYPE=".$msg->TYPE);
   }    
   public static function handleRest() {
@@ -50,7 +57,7 @@ abstract class Msg {
     if ($_SERVER['REQUEST_METHOD']=='POST') {
       header('Content-Type: text/plain');
       $json = file_get_contents('php://input', false, null, 0, self::GETMAXLEN);
-      static::fromJsonExecute($json);
+      static::fromJsonExecute($json, $_SERVER['REMOTE_ADDR']);
     } else if ($_SERVER['REQUEST_METHOD']=='GET') {
       header('Content-Type: text/plain');
       if ($_SERVER['QUERY_STRING']=='ping') {
@@ -71,4 +78,12 @@ abstract class Msg {
 
   const DST='';
   const TYPE='';
+  public $origin='';
+  public function insertOrigin($o) {
+    if ($this->origin) $o.='/';
+    $this->origin=$o.$this->origin;
+  }
+  public function writeLog($mts, $origin, $source, $type, $params, $result) {
+    error_log("M=$type @$mts $origin{{$source}}: $params $result");
+  }
 }

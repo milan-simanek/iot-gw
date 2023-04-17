@@ -5,7 +5,7 @@ function getMessages() {
   $msgs=0;
   while (($json=getNextMessage())) {
 //    error_log("fetch message {".$json."}\n");
-    Msg::fromJsonExecute($json);
+    Msg::fromJsonExecute($json, 'MBOX');
     if ($msgs++>20) {
       echo "interrupted, maximum message number reached.\n";
       return;
