@@ -8,7 +8,7 @@ abstract class MsgSet extends MsgInput {
   
   abstract function apply($O, $mts);
   function applyMCU($text) {
-    if (static::DEV) (new IotDev(static::DEV))->send(static::MCUCMD.$data);
+    if (static::DEV) (new IotDev(static::DEV))->send(static::MCUCMD.$text);
     return TRUE;
   }
   function execute($mts) {
