@@ -1,8 +1,8 @@
 <?php
 
 abstract class MsgSet extends MsgInput {
-  const CLASS='';	// persistent class name
-  const SMTS='';	// MTS field in object of CLASS
+  const DATACLASS='';	// persistent class name
+  const SMTS='';	// MTS field in object of DATACLASS
   const MCUCMD='?';	// MCU command
   const DEV=NULL;	// RS-link device address
   
@@ -12,7 +12,7 @@ abstract class MsgSet extends MsgInput {
     return TRUE;
   }
   function execute($mts) {
-    $class=static::CLASS;
+    $class=static::DATACLASS;
     $O=$class::LoadInstance();
     if ($O->{static::SMTS}>=$mts) return TRUE;
     if ($this->apply($O, $mts)!==TRUE) return FALSE;

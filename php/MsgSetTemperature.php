@@ -2,8 +2,8 @@
 
 abstract class MsgSetTemperature extends MsgSet {
   const MAX=40*16;		// max value
-//  const CLASS='';		// persistent class name
-//  const SMTS='';		// MTS field in object of CLASS
+//  const DATACLASS='';		// persistent class name
+//  const SMTS='';		// MTS field in object of DATACLASS
 //  const MCUCMD='?';		// MCU command
 //  const DEV='c';
   

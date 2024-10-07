@@ -3,8 +3,8 @@
 abstract class MsgSetInterval extends MsgSetInstant {
 //  const MAXAFTER=3600*24*90;	// max after [s] from now
   const MAXDURATION=31*24*3600;	// max interval duration
-//  const CLASS='';		// persistent class name
-//  const SMTS='';		// MTS field in object of CLASS
+//  const DATACLASS='';		// persistent class name
+//  const SMTS='';		// MTS field in object of DATACLASS
 //  const MCUCMD='?';		// MCU command
 //  const DEV='c';
   

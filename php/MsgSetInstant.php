@@ -2,8 +2,8 @@
 
 abstract class MsgSetInstant extends MsgSet {
   const MAXAFTER=3600*24*90;	// max after [s] from now
-//  const CLASS='';		// persistent class name
-//  const SMTS='';		// MTS field in object of CLASS
+//  const DATACLASS='';		// persistent class name
+//  const SMTS='';		// MTS field in object of DATACLASS
 //  const MCUCMD='?';		// MCU command
 //  const DEV='c';
   

@@ -2,8 +2,8 @@
 
 abstract class MsgSetInteger extends MsgSet {
   const MAX=65535;		// max value
-//  const CLASS='';		// persistent class name
-//  const SMTS='';		// MTS field in object of CLASS
+//  const DATACLASS='';		// persistent class name
+//  const SMTS='';		// MTS field in object of DATACLASS
 //  const MCUCMD='?';		// MCU command
 //  const DEV='c';		// RS-link device address
 
