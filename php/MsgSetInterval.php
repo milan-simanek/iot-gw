@@ -10,13 +10,13 @@ abstract class MsgSetInterval extends MsgSetInstant {
   
   public $duration=0;
   function apply($O, $mts) {
-    $sec=$duration=0;
+    $delay=$duration=0;
     if ($this->value) {
-      $sec=$this->value-time();
-      if ($sec<0 || $sec>static::MAXAFTER) $sec=0;
+      $delay=$this->value-time();
+      if ($delay<0 || $delay>static::MAXAFTER) $delay=0;
     };
     if ($this->duration) $duration=intval($this->duration);
-    if ($duration<=0) $duration=$sec=0;
-    return $this->applyMCU($sec.','.$duration);
+    if ($duration<=0) $duration=$delay=0;
+    return $this->applyMCU($duration.','.$delay);
   }
 }
