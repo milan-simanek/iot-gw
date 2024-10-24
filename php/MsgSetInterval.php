@@ -1,5 +1,7 @@
 <?php
 
+// message contains "value" and "duration" fields. 
+// value is inherited from MsgSetInstant, duration in seconds
 abstract class MsgSetInterval extends MsgSetInstant {
 //  const MAXAFTER=3600*24*90;	// max after [s] from now
   const MAXDURATION=31*24*3600;	// max interval duration
