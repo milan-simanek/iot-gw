@@ -13,6 +13,11 @@ abstract class OutputMsg extends Msg {
     ));
     $response = file_get_contents(MBOXURL, FALSE, $context);	// send the request
     if($response === FALSE) die('Error posting a message');
+    $status=json_decode($response, false, 3);
+    if (!$status || !isset($status->result) || $status->result!="OK") {
+      error_log("publishing message returned: $response");
+      return FALSE;
+    }
     return TRUE;
   }
   function GetMsg() { // we are answering to HTTP GET

@@ -25,6 +25,7 @@ class IotDev {
     socket_set_option($this->sock,SOL_SOCKET,SO_RCVTIMEO,array("sec"=>10,"usec"=>0));
     socket_recv($this->sock, $ans, static::MaxAnswerLen, 0 );
     if (preg_match($pattern, $ans, $m)) return $m;
+    error_log("IotDev::recv($pattern) received: $ans");
     return NULL;
   } 
 }
