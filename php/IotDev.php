@@ -1,7 +1,8 @@
 <?php
 
 class IotDev {
-  const SockPath = "/run/iothub-con.sock";
+  const SockPathOld = "/run/iothub-con.sock";
+  const SockPathNew = "/run/iot-con.sock";
   const MaxAnswerLen = 100;
   private $sock;
   private $peer;
@@ -11,7 +12,8 @@ class IotDev {
     $this->peer=$dev;
     if (FALSE === ($this->sock = socket_create(AF_UNIX, SOCK_STREAM, 0))) die("cannot open socket");
     if (!socket_bind($this->sock, "")) die("FAIL to bind!\n");
-    if (!socket_connect($this->sock, static::SockPath)) die("cannot connect to UX socket");
+    if (!socket_connect($this->sock, static::SockPathNew))
+      if (!socket_connect($this->sock, static::SockPathOld)) die("cannot connect to UX socket");
     socket_send($this->sock, $this->peer."\n", 2, 0);
   }
   public function __destruct() {
