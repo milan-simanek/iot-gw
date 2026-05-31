@@ -14,7 +14,24 @@ function getMessages() {
   echo "OK\n";
 }
 
-function getNextMessage() {     // get next message from a message queue
+function newGetNextMessage() {
+  $ch = curl_init(MBOXURL.'?del=1&dst='.MYDST);
+  curl_setopt_array($ch, [
+    CURLOPT_RETURNTRANSFER => true,
+    CURLOPT_HTTP_VERSION   => CURL_HTTP_VERSION_1_1,  // force HTTP/1.1
+    CURLOPT_SSLVERSION     => CURL_SSLVERSION_TLSv1_2,
+    CURLOPT_TIMEOUT        => 10,
+ ]);
+
+  $response = curl_exec($ch);
+  $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+  $error    = curl_error($ch);
+  curl_close($ch);
+  if ($httpCode!=200) return '';
+  if (substr($response,0,4)==="null") return '';
+  return $response;
+}
+function oldGetNextMessage() {     // get next message from a message queue
   // Create the context for the request
   $context = stream_context_create(array(
     'http' => array(
@@ -26,5 +43,7 @@ function getNextMessage() {     // get next message from a message queue
   if (substr($response,0,4)==="null") $response='';
   return $response;
 }
-
+function getNextMessage() {
+  return newGetNextMessage();
+}
 Msg::registerLocalAction('getmsg', 'getMessages');
